@@ -72,6 +72,7 @@ contract Token is ERC20, LiquidityManagement {
 
         emit PoolSuccessfullyCreated(pool);
     }
+
     /// @notice adds Liquidity to the pool without open a position
     /// @dev Inherits Function from LiquidityManagment library
     function seedLiquidity(address _token1, uint256 amount0ToMint, uint256 amount1ToMint) 
@@ -166,6 +167,7 @@ contract Token is ERC20, LiquidityManagement {
         }
     }
 
+    /// @notice changesOwner of contract
     function changeOwner(address newOwner) external onlyOwner {
         require(newOwner != address(0));
         owner = address(newOwner);
