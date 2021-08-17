@@ -22,15 +22,17 @@ module.exports = {
     networks: {
         hardhat: {
             forking: {
-                url: process.env.ALCHEMY_URL_MAINNET,
+                url: process.env.ALCHEMY_URL_ROPSTEN,
             },
         },
         kovan: {
             url: process.env.ALCHEMY_URL_KOVAN,
+        },
+        ropsten: {
+            url: process.env.ALCHEMY_URL_ROPSTEN,
             accounts: {
                 mnemonic: process.env.MNEMONIC,
-            },
-            gas: "auto"
+            }
         }
     },
     mocha: {
