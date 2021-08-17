@@ -22,7 +22,7 @@ module.exports = {
     networks: {
         hardhat: {
             forking: {
-                url: process.env.ALCHEMY_URL_ROPSTEN,
+                url: process.env.ALCHEMY_URL_MAINNET,
             },
         },
         kovan: {
