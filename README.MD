@@ -19,4 +19,4 @@ MNEMONIC= ...
 Inside the script folder there is a deploy.js file which will deploy the Token.sol (main contract).  
 ```npx hardhat run ./scripts/deploy.js --network [desired network]```
 
-
+Contract deployed on ropsten with address ```0xfd713fdAbAf03361cD1d27BF998bD692d62d88F5```
