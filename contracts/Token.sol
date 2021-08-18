@@ -25,7 +25,7 @@ contract Token is ERC20, LiquidityManagement {
     uint24 poolFee;
     
     /// @dev The minimum tick that may be passed to #getSqrtRatioAtTick computed from log base 1.0001 of 2**-128
-    int24 internal constant MIN_TICK = -887272;
+    int24 internal constant MIN_TICK = -887220;
     /// @dev The maximum tick that may be passed to #getSqrtRatioAtTick computed from log base 1.0001 of 2**128
     int24 internal constant MAX_TICK = -MIN_TICK;
 
@@ -42,7 +42,7 @@ contract Token is ERC20, LiquidityManagement {
 
     event PoolSuccessfullyCreated(address pool);
     event OwnershipChanged(address owner);
-    event AddedLiquidity(uint128 liquidity);
+    event PositionMinted(uint256 tokenId, uint128 liquidity);
 
     modifier onlyOwner() {
         require(msg.sender == owner, "This is not owner of contract");
@@ -73,36 +73,6 @@ contract Token is ERC20, LiquidityManagement {
         emit PoolSuccessfullyCreated(pool);
     }
 
-    /// @notice adds Liquidity to the pool without open a position
-    /// @dev Inherits Function from LiquidityManagment library
-    function seedLiquidity(address _token1, uint256 amount0ToMint, uint256 amount1ToMint) 
-        external 
-        returns(
-            uint128 liquidity,
-            uint256 amount0,
-            uint256 amount1,
-            IUniswapV3Pool pool
-        )
-        {
-            
-        AddLiquidityParams memory params = 
-            AddLiquidityParams({
-                token0: address(this),
-                token1: _token1,
-                fee: poolFee,
-                tickLower: MIN_TICK,
-                tickUpper: MAX_TICK,
-                amount0Desired: amount0ToMint,
-                amount1Desired: amount1ToMint,
-                amount0Min: 50,
-                amount1Min: 10000,
-                recipient: address(this)
-            }); 
-
-            (liquidity, amount0, amount1, pool) = addLiquidity(params);
-            
-            emit AddedLiquidity(liquidity);
-    }
 
     /// @notice Calls the mint function defined in periphery   
     /// @return tokenId The id of the newly minted ERC721    
@@ -165,6 +135,8 @@ contract Token is ERC20, LiquidityManagement {
             uint256 refund1 = amount1ToMint - amount1;
             TransferHelper.safeTransfer(_token1, msg.sender, refund1);
         }
+
+        emit PositionMinted(tokenId, liquidity);
     }
 
     /// @notice changesOwner of contract
