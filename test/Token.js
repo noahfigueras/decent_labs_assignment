@@ -71,15 +71,27 @@ describe("Decent Lab Assignment Token Contract testing", function() {
 
         it("Provides Liquidity to the pool", async function() {
             await token.changeOwner("0x0548F59fEE79f8832C299e01dCA5c76F034F558e");
-            const tx = await token.connect(impAddr).createPool(WETHAddress, poolFee);
-            tx.wait()
+            await token.connect(impAddr).createPool(WETHAddress, poolFee);
 
-            await token.transfer(impAddr.address, ethers.utils.parseUnits('1000',18));
-            await token.connect(impAddr).mintPosition(
+            const abi = [
+                "function transfer(address to, uint256 value) external returns (bool success)",
+            ];
+            const WETH = new ethers.Contract(WETHAddress, abi, impAddr);
+            
+            //Transfer tokens to contract
+            await token.transfer(token.address, ethers.utils.parseUnits('1000',18));
+            await WETH.transfer(token.address, ethers.utils.parseUnits('100', 18));
+
+            const tx = await token.connect(impAddr).mintPosition(
                 WETHAddress, 
                 ethers.utils.parseUnits('1000', 18), 
                 ethers.utils.parseUnits('100', 18)
             ); 
+            const reciept = await tx.wait();
+
+            const liquidity = reciept.events.filter(e => e.event === 'PositionMinted' ? e.args.liquidity : 0);
+
+            expect(liquidity).to.not.equal(0);
         });
     })
 })
